@@ -1,0 +1,30 @@
+{
+  "name": "Spinach",
+  "version": "1.0.0",
+  "description": "Backtron app",
+  "repository": "hrfmmymt/spinach",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "electron ."
+  },
+  "keywords": [],
+  "author": {
+    "name": "hrfmmymt",
+    "email": "hrfmmymt@gmail.com",
+    "url": "github.com/hrfmmymt"
+  },
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^1.4.6",
+    "electron-packager": "^8.2.0",
+    "electron-prebuilt": "^1.4.6"
+  },
+  "dependencies": {
+    "electron-config": "^0.2.1",
+    "electron-context-menu": "^0.7.0",
+    "electron-debug": "^1.1.0",
+    "electron-dl": "^1.5.0",
+    "element-ready": "^0.2.0"
+  }
+}
