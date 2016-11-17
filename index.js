@@ -34,19 +34,16 @@ function updateBadge(title) {
     return;
   }
 
-  let messageCount = title.replace(/TASK.*$/, '').replace(/[^\x01-\x7E]/g, function(s){
-    return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
-  }).replace(/\D/g, '');
-
+  let messageCount = title.replace(/TASK.*$/, '').replace(/\D/g, '');
   messageCount = messageCount ? Number(messageCount) : 0;
 
   if (process.platform === 'darwin' || process.platform === 'linux') {
     app.setBadgeCount(messageCount);
   }
 
-  if (process.platform === 'linux' || process.platform === 'win32') {
-    tray.setBadge(messageCount);
-  }
+  // if (process.platform === 'linux' || process.platform === 'win32') {
+  //   tray.setBadge(messageCount);
+  // }
 }
 
 function createMainWindow() {
@@ -117,7 +114,6 @@ app.on('ready', () => {
     e.preventDefault();
     electron.shell.openExternal(url);
   });
-
 });
 
 app.on('activate', () => {

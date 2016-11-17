@@ -10,10 +10,10 @@ const appName = app.getName();
 
 const helpSubmenu = [{
   label: `${appName} Website`,
-    click() {
-      shell.openExternal('https://github.com/hrfmmymt/spinach');
-    }
-  }, {
+  click() {
+    shell.openExternal('https://github.com/hrfmmymt/spinach');
+  }
+}, {
   label: 'Report an Issue...',
   click() {
     const body = `
@@ -121,17 +121,17 @@ const otherTpl = [{
   }, {
     role: 'cut'
   }, {
-      role: 'copy'
+    role: 'copy'
   }, {
-      role: 'paste'
+    role: 'paste'
   }, {
-      role: 'pasteandmatchstyle'
+    role: 'pasteandmatchstyle'
   }, {
-      role: 'delete'
+    role: 'delete'
   }, {
-      type: 'separator'
+    type: 'separator'
   }, {
-      role: 'selectall'
+    role: 'selectall'
   }]
 }, {
   role: 'help',
