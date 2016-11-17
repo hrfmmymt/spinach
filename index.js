@@ -28,6 +28,26 @@ if (isAlreadyRunning) {
   app.quit();
 }
 
+function updateBadge(title) {
+  if (title.indexOf('Backlog') === -1) {
+    return;
+  }
+
+  let messageCount = title.replace(/TASK.*$/, '').replace(/[^\x01-\x7E]/g, function(s){
+    return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
+  }).replace(/\D/g, '');
+
+  messageCount = messageCount ? Number(messageCount) : 0;
+
+  if (process.platform === 'darwin' || process.platform === 'linux') {
+    app.setBadgeCount(messageCount);
+  }
+
+  if (process.platform === 'linux' || process.platform === 'win32') {
+    tray.setBadge(messageCount);
+  }
+}
+
 function createMainWindow() {
   const lastWindowState = config.get('lastWindowState');
   const maxWindowInteger = 2147483647;
@@ -43,7 +63,6 @@ function createMainWindow() {
     minWidth: 960,
     minHeight: 320,
     autoHideMenuBar: true,
-    notifications: config.get('notifications'),
     webPreferences: {
       preload: path.join(__dirname, 'browser.js'),
       nodeIntegration: false,
@@ -69,8 +88,9 @@ function createMainWindow() {
     }
   });
 
-  win.on('page-title-updated', e => {
+  win.on('page-title-updated', (e, title) => {
     e.preventDefault();
+    updateBadge(title);
   });
 
   win.on('enter-full-screen', () => {
@@ -79,7 +99,6 @@ function createMainWindow() {
 
   return win;
 }
-
 
 app.on('ready', () => {
   electron.Menu.setApplicationMenu(appMenu);
@@ -90,17 +109,6 @@ app.on('ready', () => {
   page.on('dom-ready', () => {
     mainWindow.show();
   });
-
-  setInterval(function() {
-    let notifications = page.browserWindowOptions.notifications;
-    notifications = notifications ? Number(notifications) : 0;
-    if (process.platform === 'darwin' || process.platform === 'linux') {
-      app.setBadgeCount(notifications);
-    }
-    if (process.platform === 'linux' || process.platform === 'win32') {
-      tray.setBadge(notifications);
-    }
-  }, 1000);
 
   page.on('new-window', (e, url) => {
     e.preventDefault();

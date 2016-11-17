@@ -1,11 +1,14 @@
 'use strict';
 
-const electron = require('electron');
-const config = require('./config');
-
 document.addEventListener('DOMContentLoaded', () => {
+  let DOMNotifications = 0;
+  const title = document.title;
   setInterval(function() {
-    let DOMNotifications = document.querySelector('#globalNotificationsLink > span').innerHTML;
-    config.set('notifications', DOMNotifications);
-  }, 1000);
+    DOMNotifications = document.querySelector('#globalNotificationsLink > span').innerHTML;
+    DOMNotifications = DOMNotifications ? DOMNotifications : 0;
+    document.title = DOMNotifications + title;
+
+    console.log(document.title);
+
+  },1000);
 });
