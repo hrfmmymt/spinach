@@ -6,6 +6,7 @@ module.exports = new Config({
     lastWindowState: {
       width: 960,
       height: 320
-    }
+    },
+    notifications: 0
   }
 });

@@ -1,7 +1,6 @@
 'use strict';
 
 const path = require('path');
-const fs = require('fs');
 const electron = require('electron');
 const appMenu = require('./menu');
 const config = require('./config');
@@ -44,8 +43,9 @@ function createMainWindow() {
     minWidth: 960,
     minHeight: 320,
     autoHideMenuBar: true,
-    backgroundColor: '#fff',
+    notifications: config.get('notifications'),
     webPreferences: {
+      preload: path.join(__dirname, 'browser.js'),
       nodeIntegration: false,
       plugins: true
     }
@@ -80,6 +80,7 @@ function createMainWindow() {
   return win;
 }
 
+
 app.on('ready', () => {
   electron.Menu.setApplicationMenu(appMenu);
   mainWindow = createMainWindow();
@@ -90,10 +91,22 @@ app.on('ready', () => {
     mainWindow.show();
   });
 
+  setInterval(function() {
+    let notifications = page.browserWindowOptions.notifications;
+    notifications = notifications ? Number(notifications) : 0;
+    if (process.platform === 'darwin' || process.platform === 'linux') {
+      app.setBadgeCount(notifications);
+    }
+    if (process.platform === 'linux' || process.platform === 'win32') {
+      tray.setBadge(notifications);
+    }
+  }, 1000);
+
   page.on('new-window', (e, url) => {
     e.preventDefault();
     electron.shell.openExternal(url);
   });
+
 });
 
 app.on('activate', () => {
