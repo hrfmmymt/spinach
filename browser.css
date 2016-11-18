@@ -1,4 +1,4 @@
-header {
+header#global {
   padding-left: 80px !important;
   -webkit-app-region: drag;
 }
