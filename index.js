@@ -29,6 +29,23 @@ if (isAlreadyRunning) {
   app.quit();
 }
 
+function updateBadge(title) {
+  if (title.indexOf('Backlog') === -1) {
+    return;
+  }
+
+  let messageCount = title.replace(/TASK.*$/, '').replace(/\D/g, '');
+  messageCount = messageCount ? Number(messageCount) : 0;
+
+  if (process.platform === 'darwin' || process.platform === 'linux') {
+    app.setBadgeCount(messageCount);
+  }
+
+  // if (process.platform === 'linux' || process.platform === 'win32') {
+  //   tray.setBadge(messageCount);
+  // }
+}
+
 function createMainWindow() {
   const lastWindowState = config.get('lastWindowState');
   const maxWindowInteger = 2147483647;
@@ -43,9 +60,10 @@ function createMainWindow() {
     icon: process.platform === 'linux' && path.join(__dirname, 'static/Icon.png'),
     minWidth: 960,
     minHeight: 320,
+    titleBarStyle: 'hidden-inset',
     autoHideMenuBar: true,
-    backgroundColor: '#fff',
     webPreferences: {
+      preload: path.join(__dirname, 'browser.js'),
       nodeIntegration: false,
       plugins: true
     }
@@ -69,8 +87,9 @@ function createMainWindow() {
     }
   });
 
-  win.on('page-title-updated', e => {
+  win.on('page-title-updated', (e, title) => {
     e.preventDefault();
+    updateBadge(title);
   });
 
   win.on('enter-full-screen', () => {
@@ -87,6 +106,7 @@ app.on('ready', () => {
   const page = mainWindow.webContents;
 
   page.on('dom-ready', () => {
+    page.insertCSS(fs.readFileSync(path.join(__dirname, 'browser.css'), 'utf8'));
     mainWindow.show();
   });
 
