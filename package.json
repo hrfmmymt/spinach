@@ -18,7 +18,7 @@
     "email": "hrfmmymt@gmail.com",
     "url": "github.com/hrfmmymt"
   },
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "electron": "^1.4.6",
     "electron-packager": "^8.2.0",

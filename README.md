@@ -19,3 +19,7 @@
 ### Linux
 
 [Download](https://github.com/hrfmmymt/spinach/releases/latest) and unzip to some location.
+
+## License
+
+MIT © [hrfmmymt](http://hrfmmymt.github.io/)
