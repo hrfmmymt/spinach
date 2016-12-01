@@ -34,8 +34,8 @@ function updateBadge(title) {
     return;
   }
 
-  let messageCount = title.replace(/TASK.*$/, '').replace(/\D/g, '');
-  messageCount = messageCount ? Number(messageCount) : 0;
+  let messageCount = title.match(/\[(.+?)\]/);
+  messageCount = messageCount ? Number(messageCount[1].replace(/\D/g, '')) : 0;
 
   if (process.platform === 'darwin' || process.platform === 'linux') {
     app.setBadgeCount(messageCount);
