@@ -86,16 +86,23 @@ const darwinTpl = [{
     role: 'selectall'
   }]
 }, {
+  label: 'View',
+  submenu: [
+    {
+      label: 'Reload',
+      accelerator: 'CmdOrCtrl+R',
+      click: (item, focusedWindow) => {
+        if (focusedWindow) {
+          focusedWindow.reload();
+        }
+      }
+    }, {
+      role: 'togglefullscreen'
+    }
+  ]
+}, {
   role: 'window',
   submenu: [{
-    label: 'Reload',
-    accelerator: 'CmdOrCtrl+R',
-    click(item, focusedWindow) {
-      if (focusedWindow) {
-        focusedWindow.reload();
-      }
-    }
-  }, {
     role: 'minimize'
   }, {
     role: 'close'
@@ -105,8 +112,6 @@ const darwinTpl = [{
     type: 'separator'
   }, {
     role: 'front'
-  }, {
-    role: 'togglefullscreen'
   }]
 }, {
   role: 'help',
@@ -141,6 +146,21 @@ const otherTpl = [{
   }, {
     role: 'selectall'
   }]
+}, {
+  label: 'View',
+  submenu: [
+    {
+      label: 'Reload',
+      accelerator: 'CmdOrCtrl+R',
+      click: (item, focusedWindow) => {
+        if (focusedWindow) {
+          focusedWindow.reload();
+        }
+      }
+    }, {
+      role: 'togglefullscreen'
+    }
+  ]
 }, {
   role: 'help',
   submenu: helpSubmenu
