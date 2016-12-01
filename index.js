@@ -34,7 +34,7 @@ function updateBadge(title) {
     return;
   }
 
-  let messageCount = title.match(/\[(.+?)\]/);
+  let messageCount = title.match(/^\[(.+?)]/);
   messageCount = messageCount ? Number(messageCount[1].replace(/\D/g, '')) : 0;
 
   if (process.platform === 'darwin' || process.platform === 'linux') {
