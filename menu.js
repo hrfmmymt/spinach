@@ -88,6 +88,14 @@ const darwinTpl = [{
 }, {
   role: 'window',
   submenu: [{
+    label: 'Reload',
+    accelerator: 'CmdOrCtrl+R',
+    click(item, focusedWindow) {
+      if (focusedWindow) {
+        focusedWindow.reload();
+      }
+    }
+  }, {
     role: 'minimize'
   }, {
     role: 'close'
