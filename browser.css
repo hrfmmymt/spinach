@@ -2,7 +2,3 @@ header#global {
   padding-left: 80px !important;
   -webkit-app-region: drag;
 }
-
-.global-nav-content {
-  margin-left: 80px !important;
-}
