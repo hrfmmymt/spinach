@@ -9,9 +9,4 @@ document.addEventListener("DOMContentLoaded", () => {
 
     console.log(document.title);
   }, 1000);
-
-  const tooltip = document.querySelectorAll(".global-nav-content");
-  Array.from(tooltip).forEach(list => {
-    list.style.left = parseFloat(list.style.left) + 80 + "px !important";
-  });
 });

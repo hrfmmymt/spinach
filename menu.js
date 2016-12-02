@@ -3,6 +3,7 @@
 const os = require("os");
 const path = require("path");
 const electron = require("electron");
+const config = require("./config");
 
 const app = electron.app;
 const shell = electron.shell;
@@ -112,6 +113,17 @@ const darwinTpl = [{
     type: "separator"
   }, {
     role: "front"
+  }, {
+    type: "separator"
+  }, {
+    type: "checkbox",
+    label: "Always on Top",
+    accelerator: "Cmd+Shift+T",
+    checked: config.get("alwaysOnTop"),
+    click(item, focusedWindow) {
+      config.set("alwaysOnTop", item.checked);
+      focusedWindow.setAlwaysOnTop(item.checked);
+    }
   }]
 }, {
   role: "help",

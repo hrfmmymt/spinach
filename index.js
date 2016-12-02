@@ -58,9 +58,7 @@ function createMainWindow() {
     width: lastWindowState.width,
     height: lastWindowState.height,
     icon: process.platform === "linux" && path.join(__dirname, "static/Icon.png"),
-    minWidth: 960,
-    minHeight: 320,
-    titleBarStyle: "hidden-inset",
+    alwaysOnTop: config.get("alwaysOnTop"),
     autoHideMenuBar: true,
     webPreferences: {
       preload: path.join(__dirname, "browser.js"),
