@@ -12,6 +12,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const tooltip = document.querySelectorAll(".global-nav-content");
   Array.from(tooltip).forEach(list => {
-    list.style.left = parseFloat(list.style.left) +80 + "px !important";
+    list.style.left = parseFloat(list.style.left) + 80 + "px !important";
   });
 });
