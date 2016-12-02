@@ -34,6 +34,9 @@
   },
   "xo": {
     "space": 2,
+    "rules": {
+      "quotes": [2, "double"]
+    },
     "esnext": true,
     "envs": [
       "node",

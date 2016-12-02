@@ -1,8 +1,8 @@
-'use strict';
+"use strict";
 
-const os = require('os');
-const path = require('path');
-const electron = require('electron');
+const os = require("os");
+const path = require("path");
+const electron = require("electron");
 
 const app = electron.app;
 const shell = electron.shell;
@@ -11,10 +11,10 @@ const appName = app.getName();
 const helpSubmenu = [{
   label: `${appName} Website`,
   click() {
-    shell.openExternal('https://github.com/hrfmmymt/spinach');
+    shell.openExternal("https://github.com/hrfmmymt/spinach");
   }
 }, {
-  label: 'Report an Issue...',
+  label: "Report an Issue...",
   click() {
     const body = `
 <!-- Please succinctly describe your issue and steps to reproduce it. -->
@@ -27,16 +27,16 @@ ${process.platform} ${process.arch} ${os.release()}`;
   }
 }];
 
-if (process.platform !== 'darwin') {
+if (process.platform !== "darwin") {
   helpSubmenu.push({
-    type: 'separator'
+    type: "separator"
   }, {
-    role: 'about',
+    role: "about",
     click() {
       electron.dialog.showMessageBox({
         title: `About ${appName}`,
         message: `${appName} ${app.getVersion()}`,
-        icon: path.join(__dirname, 'static/Icon.png'),
+        icon: path.join(__dirname, "static/Icon.png"),
         buttons: []
       });
     }
@@ -46,126 +46,126 @@ if (process.platform !== 'darwin') {
 const darwinTpl = [{
   label: appName,
   submenu: [{
-    role: 'about'
+    role: "about"
   }, {
-    type: 'separator',
-    role: 'services',
+    type: "separator",
+    role: "services",
     submenu: []
   }, {
-    type: 'separator'
+    type: "separator"
   }, {
-    role: 'hide'
+    role: "hide"
   }, {
-    role: 'hideothers'
+    role: "hideothers"
   }, {
-    role: 'unhide'
+    role: "unhide"
   }, {
-    type: 'separator'
+    type: "separator"
   }, {
-    role: 'quit'
+    role: "quit"
   }]
 }, {
-  label: 'Edit',
+  label: "Edit",
   submenu: [{
-    role: 'undo'
+    role: "undo"
   }, {
-    role: 'redo'
+    role: "redo"
   }, {
-    type: 'separator'
+    type: "separator"
   }, {
-    role: 'cut'
+    role: "cut"
   }, {
-    role: 'copy'
+    role: "copy"
   }, {
-    role: 'paste'
+    role: "paste"
   }, {
-    role: 'pasteandmatchstyle'
+    role: "pasteandmatchstyle"
   }, {
-    role: 'delete'
+    role: "delete"
   }, {
-    role: 'selectall'
+    role: "selectall"
   }]
 }, {
-  label: 'View',
+  label: "View",
   submenu: [
     {
-      label: 'Reload',
-      accelerator: 'CmdOrCtrl+R',
+      label: "Reload",
+      accelerator: "CmdOrCtrl+R",
       click: (item, focusedWindow) => {
         if (focusedWindow) {
           focusedWindow.reload();
         }
       }
     }, {
-      role: 'togglefullscreen'
+      role: "togglefullscreen"
     }
   ]
 }, {
-  role: 'window',
+  role: "window",
   submenu: [{
-    role: 'minimize'
+    role: "minimize"
   }, {
-    role: 'close'
+    role: "close"
   }, {
-    type: 'separator'
+    type: "separator"
   }, {
-    type: 'separator'
+    type: "separator"
   }, {
-    role: 'front'
+    role: "front"
   }]
 }, {
-  role: 'help',
+  role: "help",
   submenu: helpSubmenu
 }];
 
 const otherTpl = [{
-  label: 'File',
+  label: "File",
   submenu: [{
-    role: 'quit'
+    role: "quit"
   }]
 }, {
-  label: 'Edit',
+  label: "Edit",
   submenu: [{
-    role: 'undo'
+    role: "undo"
   }, {
-    role: 'redo'
+    role: "redo"
   }, {
-    type: 'separator'
+    type: "separator"
   }, {
-    role: 'cut'
+    role: "cut"
   }, {
-    role: 'copy'
+    role: "copy"
   }, {
-    role: 'paste'
+    role: "paste"
   }, {
-    role: 'pasteandmatchstyle'
+    role: "pasteandmatchstyle"
   }, {
-    role: 'delete'
+    role: "delete"
   }, {
-    type: 'separator'
+    type: "separator"
   }, {
-    role: 'selectall'
+    role: "selectall"
   }]
 }, {
-  label: 'View',
+  label: "View",
   submenu: [
     {
-      label: 'Reload',
-      accelerator: 'CmdOrCtrl+R',
+      label: "Reload",
+      accelerator: "CmdOrCtrl+R",
       click: (item, focusedWindow) => {
         if (focusedWindow) {
           focusedWindow.reload();
         }
       }
     }, {
-      role: 'togglefullscreen'
+      role: "togglefullscreen"
     }
   ]
 }, {
-  role: 'help',
+  role: "help",
   submenu: helpSubmenu
 }];
 
-const tpl = process.platform === 'darwin' ? darwinTpl : otherTpl;
+const tpl = process.platform === "darwin" ? darwinTpl : otherTpl;
 
 module.exports = electron.Menu.buildFromTemplate(tpl);

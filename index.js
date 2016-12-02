@@ -1,16 +1,16 @@
-'use strict';
+"use strict";
 
-const path = require('path');
-const fs = require('fs');
-const electron = require('electron');
-const appMenu = require('./menu');
-const config = require('./config');
+const path = require("path");
+const fs = require("fs");
+const electron = require("electron");
+const appMenu = require("./menu");
+const config = require("./config");
 
 const app = electron.app;
 
-require('electron-debug')();
-require('electron-dl')();
-require('electron-context-menu')();
+require("electron-debug")();
+require("electron-dl")();
+require("electron-context-menu")();
 
 let mainWindow;
 let isQuitting = false;
@@ -30,14 +30,14 @@ if (isAlreadyRunning) {
 }
 
 function updateBadge(title) {
-  if (title.indexOf('Backlog') === -1) {
+  if (title.indexOf("Backlog") === -1) {
     return;
   }
 
   let messageCount = title.match(/^\[(.+?)]/);
-  messageCount = messageCount ? Number(messageCount[1].replace(/\D/g, '')) : 0;
+  messageCount = messageCount ? Number(messageCount[1].replace(/\D/g, "")) : 0;
 
-  if (process.platform === 'darwin' || process.platform === 'linux') {
+  if (process.platform === "darwin" || process.platform === "linux") {
     app.setBadgeCount(messageCount);
   }
 
@@ -47,7 +47,7 @@ function updateBadge(title) {
 }
 
 function createMainWindow() {
-  const lastWindowState = config.get('lastWindowState');
+  const lastWindowState = config.get("lastWindowState");
   const maxWindowInteger = 2147483647;
 
   const win = new electron.BrowserWindow({
@@ -57,29 +57,29 @@ function createMainWindow() {
     y: lastWindowState.y,
     width: lastWindowState.width,
     height: lastWindowState.height,
-    icon: process.platform === 'linux' && path.join(__dirname, 'static/Icon.png'),
+    icon: process.platform === "linux" && path.join(__dirname, "static/Icon.png"),
     minWidth: 960,
     minHeight: 320,
-    titleBarStyle: 'hidden-inset',
+    titleBarStyle: "hidden-inset",
     autoHideMenuBar: true,
     webPreferences: {
-      preload: path.join(__dirname, 'browser.js'),
+      preload: path.join(__dirname, "browser.js"),
       nodeIntegration: false,
       plugins: true
     }
   });
 
-  if (process.platform === 'darwin') {
+  if (process.platform === "darwin") {
     win.setSheetOffset(40);
   }
 
-  win.loadURL('https://www.backlog.jp/');
+  win.loadURL("https://www.backlog.jp/");
 
-  win.on('close', e => {
+  win.on("close", e => {
     if (!isQuitting) {
       e.preventDefault();
 
-      if (process.platform === 'darwin') {
+      if (process.platform === "darwin") {
         app.hide();
       } else {
         win.hide();
@@ -87,43 +87,43 @@ function createMainWindow() {
     }
   });
 
-  win.on('page-title-updated', (e, title) => {
+  win.on("page-title-updated", (e, title) => {
     e.preventDefault();
     updateBadge(title);
   });
 
-  win.on('enter-full-screen', () => {
+  win.on("enter-full-screen", () => {
     win.setMaximumSize(maxWindowInteger, maxWindowInteger);
   });
 
   return win;
 }
 
-app.on('ready', () => {
+app.on("ready", () => {
   electron.Menu.setApplicationMenu(appMenu);
   mainWindow = createMainWindow();
 
   const page = mainWindow.webContents;
 
-  page.on('dom-ready', () => {
-    page.insertCSS(fs.readFileSync(path.join(__dirname, 'browser.css'), 'utf8'));
+  page.on("dom-ready", () => {
+    page.insertCSS(fs.readFileSync(path.join(__dirname, "browser.css"), "utf8"));
     mainWindow.show();
   });
 
-  page.on('new-window', (e, url) => {
+  page.on("new-window", (e, url) => {
     e.preventDefault();
     electron.shell.openExternal(url);
   });
 });
 
-app.on('activate', () => {
+app.on("activate", () => {
   mainWindow.show();
 });
 
-app.on('before-quit', () => {
+app.on("before-quit", () => {
   isQuitting = true;
 
   if (!mainWindow.isFullScreen()) {
-    config.set('lastWindowState', mainWindow.getBounds());
+    config.set("lastWindowState", mainWindow.getBounds());
   }
 });
