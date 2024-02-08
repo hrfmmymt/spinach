@@ -15,18 +15,18 @@ require("electron-context-menu")();
 let mainWindow;
 let isQuitting = false;
 
-const isAlreadyRunning = app.makeSingleInstance(() => {
-  if (mainWindow) {
-    if (mainWindow.isMinimized()) {
-      mainWindow.restore();
-    }
+const gotTheLock = app.requestSingleInstanceLock();
 
-    mainWindow.show();
-  }
-});
-
-if (isAlreadyRunning) {
+if (!gotTheLock) {
   app.quit();
+} else {
+  app.on("second-instance", (event, commandLine, workingDirectory) => {
+    // Someone tried to run a second instance, we should focus our window.
+    if (mainWindow) {
+      if (mainWindow.isMinimized()) mainWindow.restore();
+      mainWindow.focus();
+    }
+  });
 }
 
 function updateBadge(title) {
@@ -41,9 +41,9 @@ function updateBadge(title) {
     app.setBadgeCount(messageCount);
   }
 
-  // if (process.platform === 'linux' || process.platform === 'win32') {
-  //   tray.setBadge(messageCount);
-  // }
+  if (process.platform === "linux" || process.platform === "win32") {
+    tray.setBadge(messageCount);
+  }
 }
 
 function createMainWindow() {
@@ -57,14 +57,15 @@ function createMainWindow() {
     y: lastWindowState.y,
     width: lastWindowState.width,
     height: lastWindowState.height,
-    icon: process.platform === "linux" && path.join(__dirname, "static/Icon.png"),
+    icon:
+      process.platform === "linux" && path.join(__dirname, "static/Icon.png"),
     alwaysOnTop: config.get("alwaysOnTop"),
     autoHideMenuBar: true,
     webPreferences: {
       preload: path.join(__dirname, "browser.js"),
       nodeIntegration: false,
-      plugins: true
-    }
+      plugins: true,
+    },
   });
 
   if (process.platform === "darwin") {
@@ -73,7 +74,7 @@ function createMainWindow() {
 
   win.loadURL("https://www.backlog.jp/");
 
-  win.on("close", e => {
+  win.on("close", (e) => {
     if (!isQuitting) {
       e.preventDefault();
 
@@ -104,7 +105,9 @@ app.on("ready", () => {
   const page = mainWindow.webContents;
 
   page.on("dom-ready", () => {
-    page.insertCSS(fs.readFileSync(path.join(__dirname, "browser.css"), "utf8"));
+    page.insertCSS(
+      fs.readFileSync(path.join(__dirname, "browser.css"), "utf8")
+    );
     mainWindow.show();
   });
 

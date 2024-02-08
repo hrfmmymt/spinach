@@ -20,17 +20,17 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "electron": "^1.7.9",
-    "electron-packager": "^10.1.0",
-    "xo": "^0.18.2"
+    "electron": "^28.2.2",
+    "electron-packager": "^17.1.2",
+    "xo": "^0.57.0"
   },
   "dependencies": {
     "electron-config": "^1.0.0",
-    "electron-context-menu": "^0.9.1",
-    "electron-debug": "^1.4.0",
-    "electron-dl": "^1.10.0",
-    "element-ready": "^2.2.0",
-    "sumchecker": "^2.0.2"
+    "electron-context-menu": "^3.6.1",
+    "electron-debug": "^3.2.0",
+    "electron-dl": "^3.5.2",
+    "element-ready": "^7.0.0",
+    "sumchecker": "^3.0.1"
   },
   "xo": {
     "space": 2,
