@@ -8,7 +8,7 @@ const config = require("./config");
 
 const app = electron.app;
 
-require("electron-debug")();
+require("electron-debug")({showDevTools: false});
 require("electron-dl")();
 require("electron-context-menu")();
 
@@ -72,7 +72,29 @@ function createMainWindow() {
     win.setSheetOffset(40);
   }
 
-  win.loadURL("https://www.backlog.jp/");
+  win.loadURL(config.get("lastURL") || "https://www.backlog.jp/");
+
+  const isAppUrl = (url) => {
+    try {
+      const host = new URL(url).hostname;
+      return host.includes("backlog.com") ||
+        host.includes("backlog.jp") ||
+        host.includes("nulab.com") ||
+        host.includes("nulab-inc.com");
+    } catch {
+      return false;
+    }
+  };
+
+  win.webContents.setWindowOpenHandler(({url}) => {
+    if (isAppUrl(url)) {
+      win.loadURL(url);
+    } else {
+      electron.shell.openExternal(url);
+    }
+
+    return {action: "deny"};
+  });
 
   win.on("close", (e) => {
     if (!isQuitting) {
@@ -113,7 +135,20 @@ app.on("ready", () => {
 
   page.on("new-window", (e, url) => {
     e.preventDefault();
-    electron.shell.openExternal(url);
+  });
+
+  page.on("did-navigate", (e, url) => {
+    const parsed = new URL(url);
+    const host = parsed.hostname;
+    const isWorkspaceUrl =
+      (host.endsWith(".backlog.com") || host.endsWith(".backlog.jp")) &&
+      host !== "www.backlog.com" &&
+      host !== "www.backlog.jp" &&
+      host !== "backlog.com" &&
+      host !== "backlog.jp";
+    if (isWorkspaceUrl) {
+      config.set("lastURL", url);
+    }
   });
 });
 
