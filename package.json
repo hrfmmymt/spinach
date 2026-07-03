@@ -9,7 +9,7 @@
     "test": "xo && node --test",
     "start": "electron .",
     "build": "npm run build:macos && npm run build:linux && npm run build:windows",
-    "build:macos": "electron-packager . --overwrite --asar --out=dist --ignore='^media$' --platform=darwin --arch=x64 --icon=static/Icon.icns && cd dist/Spinach-darwin-x64 && zip -ryXq9 ../Spinach-osx-${npm_package_version}.zip Spinach.app",
+    "build:macos": "electron-packager . --overwrite --asar --out=dist --ignore='^media$' --platform=darwin --arch=universal --icon=static/Icon.icns && cd dist/Spinach-darwin-universal && zip -ryXq9 ../Spinach-osx-${npm_package_version}.zip Spinach.app",
     "build:linux": "electron-packager . --overwrite --out=dist --ignore='^media$' --platform=linux --arch=x64 && cd dist/Spinach-linux-x64/ && zip -ryq9 ../Spinach-linux-${npm_package_version}.zip *",
     "build:windows": "electron-packager . --overwrite --asar --out=dist --ignore='^media$' --platform=win32 --arch=ia32 --icon=static/Icon.ico --version-string.ProductName=$npm_package_productName && cd dist/Spinach-win32-ia32 && zip -ryq9 ../Spinach-windows-${npm_package_version}.zip *"
   },
