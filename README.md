@@ -2,8 +2,6 @@
 
 > Unofficial Backlog app
 
-[![Build Status](https://secure.travis-ci.org/hrfmmymt/spinach.svg?branch=master)](http://travis-ci.org/hrfmmymt/spinach)
-
 ![Spinach demo screenshot](media/screenshot-desktop.png)
 
 ## Install
