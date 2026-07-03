@@ -3,6 +3,7 @@
   "version": "0.2.1",
   "description": "Unofficial Backlog App",
   "repository": "hrfmmymt/spinach",
+  "type": "module",
   "main": "index.js",
   "scripts": {
     "test": "xo",
@@ -20,30 +21,14 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "electron": "^28.2.2",
-    "electron-packager": "^17.1.2",
-    "xo": "^0.57.0"
+    "@electron/packager": "^20.0.1",
+    "electron": "^43.0.0",
+    "xo": "^3.0.2"
   },
   "dependencies": {
-    "electron-config": "^1.0.0",
-    "electron-context-menu": "^3.6.1",
-    "electron-debug": "^3.2.0",
-    "electron-dl": "^3.5.2",
-    "element-ready": "^7.0.0",
-    "sumchecker": "^3.0.1"
-  },
-  "xo": {
-    "space": 2,
-    "rules": {
-      "quotes": [
-        2,
-        "double"
-      ]
-    },
-    "esnext": true,
-    "envs": [
-      "node",
-      "browser"
-    ]
+    "electron-context-menu": "^4.1.2",
+    "electron-debug": "^4.1.0",
+    "electron-dl": "^4.0.0",
+    "electron-store": "^11.0.2"
   }
 }

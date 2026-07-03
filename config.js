@@ -1,12 +1,14 @@
-const Config = require("electron-config");
+import Store from "electron-store";
 
-module.exports = new Config({
+const config = new Store({
   defaults: {
     zoomFactor: 1,
     lastWindowState: {
       width: 800,
-      height: 600
+      height: 600,
     },
-    alwaysOnTop: false
-  }
+    alwaysOnTop: false,
+  },
 });
+
+export default config;

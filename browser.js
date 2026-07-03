@@ -1,11 +1,12 @@
 "use strict";
 
 document.addEventListener("DOMContentLoaded", () => {
-  let DOMNotifications = 0;
-  const title = document.title;
+  const {title} = document;
   setInterval(() => {
-    DOMNotifications = document.querySelector("#globalNotificationsLink > span").innerHTML.length > 0 ? document.querySelector("#globalNotificationsLink > span").innerHTML : 0;
-    document.title = "[" + DOMNotifications + "]" + title;
+    const element = document.querySelector("#globalNotificationsLink > span");
+    const {innerHTML} = element;
+    const notifications = innerHTML.length > 0 ? innerHTML : 0;
+    document.title = "[" + notifications + "]" + title;
 
     console.log(document.title);
   }, 1000);

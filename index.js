@@ -1,54 +1,56 @@
-"use strict";
+import process from "node:process";
+import path from "node:path";
+import fs from "node:fs";
+import electron from "electron";
+import debug from "electron-debug";
+import electronDl from "electron-dl";
+import contextMenu from "electron-context-menu";
+import appMenu from "./menu.js";
+import config from "./config.js";
 
-const path = require("path");
-const fs = require("fs");
-const electron = require("electron");
-const appMenu = require("./menu");
-const config = require("./config");
+const {app} = electron;
 
-const app = electron.app;
-
-require("electron-debug")({showDevTools: false});
-require("electron-dl")();
-require("electron-context-menu")();
+debug({showDevTools: false});
+electronDl();
+contextMenu();
 
 let mainWindow;
 let isQuitting = false;
 
 const gotTheLock = app.requestSingleInstanceLock();
 
-if (!gotTheLock) {
-  app.quit();
-} else {
-  app.on("second-instance", (event, commandLine, workingDirectory) => {
-    // Someone tried to run a second instance, we should focus our window.
-    if (mainWindow) {
-      if (mainWindow.isMinimized()) mainWindow.restore();
-      mainWindow.focus();
+if (gotTheLock) {
+  app.on("second-instance", () => {
+    if (!mainWindow) {
+      return;
     }
+
+    if (mainWindow.isMinimized()) {
+      mainWindow.restore();
+    }
+
+    mainWindow.focus();
   });
+} else {
+  app.quit();
 }
 
 function updateBadge(title) {
-  if (title.indexOf("Backlog") === -1) {
+  if (!title.includes("Backlog")) {
     return;
   }
 
-  let messageCount = title.match(/^\[(.+?)]/);
-  messageCount = messageCount ? Number(messageCount[1].replace(/\D/g, "")) : 0;
+  const messageCount = title.match(/^\[(?<count>.+?)\]/v);
+  const count = messageCount ? Number(messageCount.groups.count.replaceAll(/\D/gv, "")) : 0;
 
   if (process.platform === "darwin" || process.platform === "linux") {
-    app.setBadgeCount(messageCount);
-  }
-
-  if (process.platform === "linux" || process.platform === "win32") {
-    tray.setBadge(messageCount);
+    app.setBadgeCount(count);
   }
 }
 
 function createMainWindow() {
   const lastWindowState = config.get("lastWindowState");
-  const maxWindowInteger = 2147483647;
+  const maxWindowInteger = 2_147_483_647;
 
   const win = new electron.BrowserWindow({
     title: app.getName(),
@@ -58,11 +60,11 @@ function createMainWindow() {
     width: lastWindowState.width,
     height: lastWindowState.height,
     icon:
-      process.platform === "linux" && path.join(__dirname, "static/Icon.png"),
+      process.platform === "linux" && path.join(import.meta.dirname, "static/Icon.png"),
     alwaysOnTop: config.get("alwaysOnTop"),
     autoHideMenuBar: true,
     webPreferences: {
-      preload: path.join(__dirname, "browser.js"),
+      preload: path.join(import.meta.dirname, "browser.js"),
       nodeIntegration: false,
       plugins: true,
     },
@@ -74,13 +76,13 @@ function createMainWindow() {
 
   win.loadURL(config.get("lastURL") || "https://www.backlog.jp/");
 
-  const isAppUrl = (url) => {
+  const isAppUrl = url => {
     try {
       const host = new URL(url).hostname;
-      return host.includes("backlog.com") ||
-        host.includes("backlog.jp") ||
-        host.includes("nulab.com") ||
-        host.includes("nulab-inc.com");
+      return host.includes("backlog.com")
+        || host.includes("backlog.jp")
+        || host.includes("nulab.com")
+        || host.includes("nulab-inc.com");
     } catch {
       return false;
     }
@@ -96,20 +98,22 @@ function createMainWindow() {
     return {action: "deny"};
   });
 
-  win.on("close", (e) => {
-    if (!isQuitting) {
-      e.preventDefault();
+  win.on("close", event => {
+    if (isQuitting) {
+      return;
+    }
 
-      if (process.platform === "darwin") {
-        app.hide();
-      } else {
-        win.hide();
-      }
+    event.preventDefault();
+
+    if (process.platform === "darwin") {
+      app.hide();
+    } else {
+      win.hide();
     }
   });
 
-  win.on("page-title-updated", (e, title) => {
-    e.preventDefault();
+  win.on("page-title-updated", (event, title) => {
+    event.preventDefault();
     updateBadge(title);
   });
 
@@ -127,25 +131,19 @@ app.on("ready", () => {
   const page = mainWindow.webContents;
 
   page.on("dom-ready", () => {
-    page.insertCSS(
-      fs.readFileSync(path.join(__dirname, "browser.css"), "utf8")
-    );
+    page.insertCSS(fs.readFileSync(path.join(import.meta.dirname, "browser.css"), "utf8"));
     mainWindow.show();
   });
 
-  page.on("new-window", (e, url) => {
-    e.preventDefault();
-  });
-
-  page.on("did-navigate", (e, url) => {
+  page.on("did-navigate", (_event, url) => {
     const parsed = new URL(url);
-    const host = parsed.hostname;
-    const isWorkspaceUrl =
-      (host.endsWith(".backlog.com") || host.endsWith(".backlog.jp")) &&
-      host !== "www.backlog.com" &&
-      host !== "www.backlog.jp" &&
-      host !== "backlog.com" &&
-      host !== "backlog.jp";
+    const {hostname} = parsed;
+    const isWorkspaceUrl
+      = (hostname.endsWith(".backlog.com") || hostname.endsWith(".backlog.jp"))
+        && hostname !== "www.backlog.com"
+        && hostname !== "www.backlog.jp"
+        && hostname !== "backlog.com"
+        && hostname !== "backlog.jp";
     if (isWorkspaceUrl) {
       config.set("lastURL", url);
     }
