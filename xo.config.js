@@ -10,8 +10,7 @@ export default [
     languageOptions: {
       globals: {
         document: "readonly",
-        console: "readonly",
-        setInterval: "readonly",
+        MutationObserver: "readonly",
       },
     },
     rules: {

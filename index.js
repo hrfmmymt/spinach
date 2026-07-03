@@ -7,6 +7,7 @@ import electronDl from "electron-dl";
 import contextMenu from "electron-context-menu";
 import appMenu from "./menu.js";
 import config from "./config.js";
+import getNotificationCount from "./notification-count.js";
 
 const {app} = electron;
 
@@ -36,17 +37,35 @@ if (gotTheLock) {
 }
 
 function updateBadge(title) {
-  if (!title.includes("Backlog")) {
-    return;
-  }
-
-  const messageCount = title.match(/^\[(?<count>.+?)\]/v);
-  const count = messageCount ? Number(messageCount.groups.count.replaceAll(/\D/gv, "")) : 0;
+  const count = getNotificationCount(title) ?? 0;
 
   if (process.platform === "darwin" || process.platform === "linux") {
     app.setBadgeCount(count);
+    return;
+  }
+
+  if (process.platform === "win32" && mainWindow) {
+    if (count > 0) {
+      const overlayIconPath = path.join(import.meta.dirname, "static/notification-overlay.png");
+      const overlayIcon = electron.nativeImage.createFromPath(overlayIconPath);
+      mainWindow.setOverlayIcon(overlayIcon, `${count} unread notifications`);
+    } else {
+      mainWindow.setOverlayIcon(null, "");
+    }
   }
 }
+
+const isAppUrl = url => {
+  try {
+    const host = new URL(url).hostname;
+    return host.includes("backlog.com")
+      || host.includes("backlog.jp")
+      || host.includes("nulab.com")
+      || host.includes("nulab-inc.com");
+  } catch {
+    return false;
+  }
+};
 
 function createMainWindow() {
   const lastWindowState = config.get("lastWindowState");
@@ -75,18 +94,6 @@ function createMainWindow() {
   }
 
   win.loadURL(config.get("lastURL") || "https://www.backlog.jp/");
-
-  const isAppUrl = url => {
-    try {
-      const host = new URL(url).hostname;
-      return host.includes("backlog.com")
-        || host.includes("backlog.jp")
-        || host.includes("nulab.com")
-        || host.includes("nulab-inc.com");
-    } catch {
-      return false;
-    }
-  };
 
   win.webContents.setWindowOpenHandler(({url}) => {
     if (isAppUrl(url)) {
@@ -125,6 +132,15 @@ function createMainWindow() {
 }
 
 app.on("ready", () => {
+  const {defaultSession} = electron.session;
+
+  defaultSession.setPermissionRequestHandler((webContents, permission, callback) => {
+    callback(isAppUrl(webContents.getURL()));
+  });
+
+  defaultSession.setPermissionCheckHandler((_webContents, _permission, requestingOrigin) =>
+    isAppUrl(requestingOrigin));
+
   electron.Menu.setApplicationMenu(appMenu);
   mainWindow = createMainWindow();
 

@@ -2,11 +2,11 @@
   "name": "Spinach",
   "version": "0.2.1",
   "description": "Unofficial Backlog App",
-  "repository": "hrfmmymt/spinach",
+  "repository": "https://github.com/hrfmmymt/spinach",
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "test": "xo",
+    "test": "xo && node --test",
     "start": "electron .",
     "build": "npm run build:macos && npm run build:linux && npm run build:windows",
     "build:macos": "electron-packager . --overwrite --asar --out=dist --ignore='^media$' --platform=darwin --arch=x64 --icon=static/Icon.icns && cd dist/Spinach-darwin-x64 && zip -ryXq9 ../Spinach-osx-${npm_package_version}.zip Spinach.app",
@@ -17,7 +17,7 @@
   "author": {
     "name": "hrfmmymt",
     "email": "hrfmmymt@gmail.com",
-    "url": "github.com/hrfmmymt"
+    "url": "https://github.com/hrfmmymt"
   },
   "license": "MIT",
   "devDependencies": {
